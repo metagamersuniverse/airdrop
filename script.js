@@ -14,7 +14,7 @@ function submitForm(event) {
   };
 
   // Make a POST request to your backend server
-  fetch('http://203.161.57.175:3000/submit-form', {
+  fetch('https://203.161.57.175:3000/submit-form', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
