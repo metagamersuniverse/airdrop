@@ -1,36 +1,23 @@
-document.getElementById("myForm").addEventListener("submit", submitForm);
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault(); // Prevent the default form submission
 
-function submitForm(event) {
-  event.preventDefault(); // Prevent the form from submitting normally
+  // Retrieve form data
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const message = document.getElementById('message').value;
 
-  var name = document.getElementById("name").value;
-  var email = document.getElementById("email").value;
-  var message = document.getElementById("message").value;
+  // Create CSV data
+  const csvData = Papa.unparse([{ name, email, message }]);
 
-  var formData = {
-    name: name,
-    email: email,
-    message: message
-  };
+  // Create a data URI for the CSV file
+  const csvFile = new Blob([csvData], { type: 'text/csv' });
+  const csvURL = URL.createObjectURL(csvFile);
 
-  // Make a POST request to your backend server
-  fetch('https://203.161.57.175:3000/submit-form', {
-  method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(formData)
-  })
-    .then(function (response) {
-      if (response.ok) {
-        alert("Form submitted successfully");
-        // Additional actions after successful form submission
-      } else {
-        alert("Form submission failed");
-        // Handle failure scenario
-      }
-    })
-    .catch(function (error) {
-      alert("An error occurred: " + error);
-    });
-}
+  // Trigger the download
+  const downloadLink = document.createElement('a');
+  downloadLink.href = csvURL;
+  downloadLink.download = 'data.csv';
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+});
