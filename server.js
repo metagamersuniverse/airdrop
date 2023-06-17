@@ -52,8 +52,9 @@ app.post('/save-data', (req, res) => {
 
 // Route handler for the root path
 app.get('/', (req, res) => {
-  res.send('<h1>Hello, World!</h1>');
+  res.sendFile('index.html', { root: 'public' });
 });
+
 
 // Start the server
 app.listen(PORT, () => {
