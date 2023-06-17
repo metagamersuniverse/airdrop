@@ -52,7 +52,7 @@ app.post('/save-data', (req, res) => {
 
 // Route handler for the root path
 app.get('/', (req, res) => {
-  res.sendFile('index.html', { root: 'public' });
+  res.sendFile('index.html', { root: 'Public' });
 });
 
 
