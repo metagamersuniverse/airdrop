@@ -50,6 +50,11 @@ app.post('/save-data', (req, res) => {
     });
 });
 
+// Route handler for the root path
+app.get('/', (req, res) => {
+  res.send('<h1>Hello, World!</h1>');
+});
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
