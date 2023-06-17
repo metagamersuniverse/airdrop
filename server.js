@@ -1,15 +1,5 @@
-const express = require('express');
-const app = express();
 const fs = require('fs');
 const ExcelJS = require('exceljs');
-
-const PORT = process.env.PORT || 3000;
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// Serve static files from the 'public' directory
-app.use(express.static('public'));
 
 const excelFilePath = './data/data.xlsx'; // Specify the path to your Excel file
 
@@ -28,29 +18,24 @@ if (!fs.existsSync(excelFilePath)) {
     });
 }
 
-// Define a route to handle form submissions
-app.post('/save-data', (req, res) => {
-  const data = req.body;
+module.exports = async (req, res) => {
+  if (req.method === 'POST') {
+    const data = req.body;
 
-  const workbook = new ExcelJS.Workbook();
-  workbook.xlsx.readFile(excelFilePath)
-    .then(() => {
+    const workbook = new ExcelJS.Workbook();
+    try {
+      await workbook.xlsx.readFile(excelFilePath);
       const worksheet = workbook.getWorksheet('Data');
       worksheet.addRow([data.twitterUsername, data.telegramUsername, data.ethereumAddress]);
 
-      return workbook.xlsx.writeFile(excelFilePath);
-    })
-    .then(() => {
+      await workbook.xlsx.writeFile(excelFilePath);
       console.log('Data appended to the Excel file');
-      res.sendStatus(200);
-    })
-    .catch((error) => {
+      res.status(200).send('Data saved successfully');
+    } catch (error) {
       console.error('Error appending data to Excel file:', error);
-      res.sendStatus(500);
-    });
-});
-
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+      res.status(500).send('Failed to save data');
+    }
+  } else {
+    res.status(405).send('Method Not Allowed');
+  }
+};
